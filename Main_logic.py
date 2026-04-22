@@ -1,4 +1,6 @@
 import math
+import re
+from sympy import symbols, Eq, solve, sympify
 
 print('Options: \n1. Calculate the area of a shape \n2. Solve a quadratic equation \n3. Calculate the factorial of a number \n4. Solve an algebraic expression \n5. Exit')
 while True:
@@ -14,17 +16,29 @@ while True:
     elif input_option == '1':
         shape = input('Enter the shape you want to calculate the area of (circle 1, square 2, rectangle 3, right triangle 4, regular triangle 5, regular polygon 6): ').lower()
         try:
-            if shape == 'circle' or shape == '1': #polygon calc peakkkk
+            if shape == 'circle' or shape == '1':
                 radius_input = float(input('Enter the radius of the circle: '))
+                if radius_input <= 0:
+                    print('Invalid input.')
+                    continue
                 area = math.pi * radius_input ** 2
                 print(f'The area of the circle is: {area}'.upper())
+            elif shape not in ['circle', '1', 'square', '2', 'rectangle', '3', 'right triangle', '4', 'regular triangle', '5', 'regular polygon', '6']:
+                print('Invalid input.')
+                continue
             elif shape == 'square' or shape == '2':
                 side_input = float(input('Enter the side length of the square: '))
+                if side_input <= 0:
+                    print('Invalid input.')
+                    continue
                 area = side_input ** 2
                 print(f'The area of the square is: {area}'.upper())
             elif shape == 'rectangle' or shape == '3':
                 length_input_rectangle = float(input('Enter the length of the rectangle: '))
                 width_input_rectangle = float(input('Enter the width of the rectangle: '))
+                if length_input_rectangle <= 0 or width_input_rectangle <= 0:
+                    print('Invalid input.')
+                    continue
                 area = length_input_rectangle * width_input_rectangle
                 print(f'The area of the rectangle is: {area}'.upper())
             elif shape == 'right triangle' or shape == '4':
@@ -36,7 +50,7 @@ while True:
                 side_input = float(input('Enter one side length of the triangle: '))
                 side_2_input = float(input('Enter the second side length of the triangle: '))
                 angle_input = float(input('Enter the angle between the sides in degrees: '))
-                if angle_input >= 0 and angle_input <= 180 and side_input > 0 and side_2_input > 0: 
+                if angle_input >= 0 and angle_input <= 180 and side_input > 0 and side_2_input > 0:
                     area = 0.5 * side_input * side_2_input * math.sin(math.radians(angle_input))
                     print(f'The area of the triangle is: {area}'.upper())
 
@@ -55,7 +69,6 @@ while True:
                 else:
                     print('Invalid input.')
                     continue
-
             elif shape == 'regular polygon' or shape == '6':
                 num_sides_input = int(input('Enter the number of sides of the polygon: '))
                 side_length_input = float(input('Enter the side length of the polygon: '))
@@ -63,12 +76,11 @@ while True:
                 perimeter = num_sides_input * side_length_input
                 area = 0.5 * perimeter * apothem_input
                 print(f'The area of the polygon is: {area}'.upper())
-
             else:
                 print('Invalid shape. Please enter one of the following: circle, square, rectangle, right triangle, regular triangle, regular polygon.')
-
         except ValueError:
             print('Invalid numeric input.')
+
     elif input_option == '2': #this is the quadratic equation thingy
         try:
             a_input = float(input('Enter the coefficient a: '))
@@ -90,7 +102,7 @@ while True:
                 print('The equation has no real roots.'.upper())
         except ValueError:
             print('Invalid numeric input.')
-    
+
     elif input_option == '3':    #this is teh factorial option
         try:
             num_input = int(input('Enter a non-negative integer: '))
@@ -101,76 +113,25 @@ while True:
             print(f'The factorial of {num_input} is: {factorial}'.upper())
         except ValueError:
             print('Invalid numeric input.')
+
     elif input_option == '4': #algebra thingy
-        user_expression_input = input('Enter a simple algebraic expression (Example: 2x-3=5)')
+        user_expression_input = input('Enter a simple algebraic expression (Example: 2x-3=5): ')
         if '=' not in user_expression_input:
-                print('Invalid expression.')
-                continue
+            print('Invalid expression.')
+            continue
         if 'x' not in user_expression_input:
-                print('Expression must contain variable x.')
-                continue
-        
-        left_side, right_side = user_expression_input.split('=')
-        left_side = left_side.strip()
-        right_side = right_side.strip()
-        #FIX ASAP -not working rn
-        if 'x' in left_side and '-' in left_side:
-            try:
-                x_value = eval(right_side) - eval(left_side.replace('x', '0'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}')
-
-        if 'x' in left_side and '+' in left_side:
-            try:
-                x_value = eval(right_side) + eval(left_side.replace('x', '0'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}')
-
-        if 'x' in right_side and '-' in right_side:
-            try: 
-                x_value = eval(right_side) - eval(left_side.replace('x', '0'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}')
-        
-        if 'x' in right_side and '+' in right_side:
-            try:
-                x_value = eval(right_side) + eval(left_side.replace('x', '0'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}')
-
-        if 'x' in left_side and '*' in left_side:
-            try:
-                x_value = eval(right_side) / eval(left_side.replace('x', '1'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}')
-        if 'x' in right_side and '*' in right_side:
-            try:
-                x_value = eval(right_side) / eval(left_side.replace('x', '1'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}') 
-
-        if 'x' in left_side and '/' in left_side:
-            try:
-                x_value = eval(right_side) * eval(left_side.replace('x', '1'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}')
-
-        if 'x' in right_side and '/' in right_side:
-            try:
-                x_value = eval(right_side) * eval(left_side.replace('x', '1'))
-                print(f'The value of x is: {x_value}'.upper())
-            except Exception as e:
-                print(f'Invalid expression. Error: {e}') 
-
-
-                
-
-
-    
+            print('Expression must contain variable x.')
+            continue
+        try:
+            x = symbols('x')
+            left_side, right_side = user_expression_input.split('=')
+            left_side = re.sub(r'(\d)(x)', r'\1*\2', left_side.strip())
+            right_side = re.sub(r'(\d)(x)', r'\1*\2', right_side.strip())
+            equation = Eq(sympify(left_side), sympify(right_side))
+            solution = solve(equation, x)
+            if solution:
+                print(f'The value of x is: {solution[0]}'.upper())
+            else:
+                print('No solution found.'.upper())
+        except Exception as e:
+            print(f'Invalid expression. Error: {e}')
