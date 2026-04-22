@@ -1,3 +1,2 @@
 # Showcase-Calculator
-Using everything I've learnt in my first week of coding to make a functional calculator. 
-This is the first commit. 
+Using everything I've learn so far in Python to make a proper, functional algebra Calculator.
