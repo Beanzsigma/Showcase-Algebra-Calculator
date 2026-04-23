@@ -1,16 +1,20 @@
 import customtkinter as ctk 
 import math
 import re
-from sympy import symbols, Eq, solve, sympify
+from sympy import SympifyError, symbols, Eq, solve, sympify
 
 window = ctk.CTk()
 window.title('Showcase Algebra Calculator')
-window.geometry("800x460")
+window.geometry("500x615")
 
 def main_menu():
     for widget in window.winfo_children():
         widget.destroy()
     ctk.CTkButton(window, text='Calculate the area of a shape', command=calculate_area).pack(pady=10)
+    ctk.CTkButton(window, text='Solve a quadratic equation', command=solve_quadratic).pack(pady=10)
+    ctk.CTkButton(window, text='Calculate the factorial of a number', command=calculate_factorial).pack(pady=10)
+    ctk.CTkButton(window, text='Solve an algebraic expression', command=solve_algebraic_expression).pack(pady=10)
+    ctk.CTkButton(window, text='Exit', command=window.destroy).pack(pady=10)  
 
 def calculate_area():
     for widget in window.winfo_children():
@@ -19,7 +23,122 @@ def calculate_area():
     ctk.CTkButton(window, text='Rectangle', command=go_to_rectangle_area).pack(pady=10)
     ctk.CTkButton(window, text='Right Triangle', command=go_to_right_triangle_area).pack(pady=10)
     ctk.CTkButton(window, text='Regular Triangle', command=go_to_regular_triangle_area).pack(pady=10)
+    ctk.CTkButton(window, text='Regular Polygon', command=go_to_regular_polygon_area).pack(pady=10)
+
+from sympy import symbols, Eq, solve, sympify, SympifyError
+import re
+
+def solve_algebraic_expression():
+    for widget in window.winfo_children():
+        widget.destroy()
+    ctk.CTkLabel(window, text='Enter an algebraic expression to solve (Use x as the variable)').pack(pady=10)
+    expression_entry = ctk.CTkEntry(window, placeholder_text='Enter expression')
+    expression_entry.pack(pady=10)
+    result_label = ctk.CTkLabel(window, text='')
+    result_label.pack(pady=10)
+    ctk.CTkButton(window, text='Return to Main Menu', command=main_menu).pack(pady=10)
+    ctk.CTkButton(window, text='Solve Expression', command=lambda: solve_and_display_expression(expression_entry.get(), result_label)).pack(pady=10)
+
+def solve_and_display_expression(expression, result_label):
+    try:
+        x = symbols('x')
+        expression = re.sub(r'(\d)(x)', r'\1*\2', expression)
+        left_side, right_side = expression.split('=')
+        equation = Eq(sympify(left_side), sympify(right_side))
+        solution = solve(equation, x)
+        if solution:
+            result_label.configure(text=f'The value of x is: {solution[0]}')
+        else:
+            result_label.configure(text='No solution found.')
+    except (ValueError, SympifyError):
+        result_label.configure(text='Invalid input. Please enter a valid algebraic expression or use x as the variable.')
+
+def calculate_factorial():
+    for widget in window.winfo_children():
+        widget.destroy()
+    ctk.CTkLabel(window, text='Enter a non-negative integer to calculate its factorial').pack(pady=10)
+    factorial_entry = ctk.CTkEntry(window, placeholder_text='Enter number')
+    factorial_entry.pack(pady=10)
+    ctk.CTkButton(window, text='Return to Main Menu', command=main_menu).pack(pady=10)
+    ctk.CTkButton(window, text='Calculate Factorial', command=lambda: calculate_and_display_factorial(factorial_entry.get())).pack(pady=10)
+
+def calculate_and_display_factorial(n):
+    try:
+        n = int(n)
+        if n < 0:
+            ctk.CTkLabel(window, text='Invalid input. Please enter a non-negative integer.').pack(pady=10)
+            return
+        factorial = math.factorial(n)
+        ctk.CTkLabel(window, text=f'The factorial of {n} is: {factorial}').pack(pady=10)
+    except ValueError:
+        ctk.CTkLabel(window, text='Invalid input. Please enter a non-negative integer.').pack(pady=10)
+
+def solve_quadratic():
+    for widget in window.winfo_children():
+        widget.destroy()
+    ctk.CTkLabel(window, text='Enter the coefficients of the quadratic equation ax^2 + bx + c = 0').pack(pady=10)
+    a_entry = ctk.CTkEntry(window, placeholder_text='a')
+    a_entry.pack(pady=10)
+    b_entry = ctk.CTkEntry(window, placeholder_text='b')
+    b_entry.pack(pady=10)
+    c_entry = ctk.CTkEntry(window, placeholder_text='c')
+    c_entry.pack(pady=10)
+    ctk.CTkButton(window, text='Return to Main Menu', command=main_menu).pack(pady=10)
+    ctk.CTkButton(window, text='Solve Equation', command=lambda: solve_equation(a_entry.get(), b_entry.get(), c_entry.get())).pack(pady=10)
+
+def solve_equation(a, b, c):
+    try:
+        a = float(a)
+        b = float(b)
+        c = float(c)
+        if a == 0:
+            ctk.CTkLabel(window, text='Coefficient a cannot be 0.').pack(pady=10)
+            return
+        x = symbols('x')
+        equation = Eq(a * x**2 + b * x + c, 0)
+        solutions = solve(equation, x)
+        ctk.CTkLabel(window, text=f'The solutions are: {solutions}').pack(pady=10)
+    except ValueError:
+        ctk.CTkLabel(window, text='Invalid input.').pack(pady=10)
 # the classes in order of logic code
+class regular_polygon_area(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.area = 0
+        self.num_sides_label = ctk.CTkLabel(self, text='Enter the number of sides of the regular polygon')
+        self.num_sides_label.pack(pady=10)
+        self.num_sides_entry = ctk.CTkEntry(self, placeholder_text='Number of sides')
+        self.num_sides_entry.pack(pady=10)
+        self.side_length_label = ctk.CTkLabel(self, text='Enter the length of one side of the regular polygon')
+        self.side_length_label.pack(pady=10)
+        self.side_length_entry = ctk.CTkEntry(self, placeholder_text='Side length')
+        self.side_length_entry.pack(pady=10)
+        self.apothem_label = ctk.CTkLabel(self, text='Enter the apothem of the regular polygon')
+        self.apothem_label.pack(pady=10)
+        self.apothem_entry = ctk.CTkEntry(self, placeholder_text='Apothem')
+        self.apothem_entry.pack(pady=10)
+        self.result_label = ctk.CTkLabel(self, text='')
+        self.result_label.pack(pady=10)
+        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area).pack(pady=10)
+        ctk.CTkButton(self, text='Return to Main Menu', command=self.go_back).pack(pady=10)
+
+    def calculate_area(self):
+        try:
+            num_sides = int(self.num_sides_entry.get())
+            side_length = float(self.side_length_entry.get())
+            apothem = float(self.apothem_entry.get())
+            if num_sides <= 0 or side_length <= 0 or apothem <= 0:
+                self.result_label.configure(text='Invalid input.')
+                return
+            self.area = 0.5 * num_sides * side_length * apothem
+            self.result_label.configure(text=f'The area of the polygon is: {round(self.area, 4)}')
+        except ValueError:
+            self.result_label.configure(text='Invalid input.')
+
+    def go_back(self):
+        for widget in window.winfo_children():
+            widget.destroy()
+        main_menu()
 class regular_triangle_area(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -183,6 +302,11 @@ def go_to_regular_triangle_area():
     for widget in window.winfo_children():
         widget.destroy()
     regular_triangle_area(window).pack(fill="both", expand=True)
+
+def go_to_regular_polygon_area():
+    for widget in window.winfo_children():
+        widget.destroy()
+    regular_polygon_area(window).pack(fill="both", expand=True)
 
 main_menu()
 window.mainloop()
