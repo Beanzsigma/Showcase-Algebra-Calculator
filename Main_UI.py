@@ -1,29 +1,79 @@
 import customtkinter as ctk 
+from PIL import Image, ImageSequence
 import math
 import re
 from sympy import SympifyError, symbols, Eq, solve, sympify
+after_id=None
 
 window = ctk.CTk()
 window.title('Showcase Algebra Calculator')
-window.geometry("500x615")
+window.geometry("480x615")
 
 def main_menu():
+    global after_id
+    if after_id:
+        window.after_cancel(after_id)
     for widget in window.winfo_children():
         widget.destroy()
-    ctk.CTkButton(window, text='Calculate the area of a shape', command=calculate_area).pack(pady=10)
-    ctk.CTkButton(window, text='Solve a quadratic equation', command=solve_quadratic).pack(pady=10)
-    ctk.CTkButton(window, text='Calculate the factorial of a number', command=calculate_factorial).pack(pady=10)
-    ctk.CTkButton(window, text='Solve an algebraic expression', command=solve_algebraic_expression).pack(pady=10)
-    ctk.CTkButton(window, text='Exit', command=window.destroy).pack(pady=10)  
+    
+    frames = []
+    gif = Image.open("Glitch_number.gif")
+    for frame in ImageSequence.Iterator(gif):
+        frame = frame.copy().convert("RGBA")
+        r, g, b, a = frame.split()
+        a = a.point(lambda x: x * 0.4)  
+        frame.putalpha(a)
+        frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+    bg_label = ctk.CTkLabel(window, text="")
+    bg_label.place(x=0, y=0)
+
+    def animate(frame_index=0):
+        global after_id
+        bg_label.configure(image=frames[frame_index])
+        after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+    animate()
+    area_img = ctk.CTkImage(Image.open("Areaofcircle.png"), size=(100, 100))
+    ctk.CTkButton(window, text='Calculate the \narea of a shape', command=calculate_area, width=223, height=223, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 12.5), image=area_img, compound = "top").place(x=10, y=46)
+    quadratic_img = ctk.CTkImage(Image.open("quadratic.png"), size=(136, 51))
+    ctk.CTkButton(window, text='Solve a \nquadratic \nequation', command=solve_quadratic, width=223, height=223, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image=quadratic_img, compound='top' ).place(x=245, y=46)
+    factorial_img = ctk.CTkImage(Image.open("Factorial.png"), size=(130, 130) )
+    ctk.CTkButton(window, text='Calculate the \nfactorial \nof a number', command=calculate_factorial, width=223, height=223, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 12.5), image= factorial_img, compound='top').place(x=10, y=288)
+    algebra_img  = ctk.CTkImage(Image.open ("Algebra_expression.png"), size=(180, 90))
+    ctk.CTkButton(window, text='Solve an \nalgebraic \nexpression', command=solve_algebraic_expression, width=223, height=223, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image= algebra_img, compound= "top").place(x=245, y=288)
+    ctk.CTkButton(window, text='Exit', command=window.destroy, width=100, height=50, fg_color="#101111", border_color="#ffffff", corner_radius=10, bg_color='transparent', border_width=2.5, hover_color="#555555", font= ('Press Start 2P', 18)).place(x=187.5, y=535)  
 
 def calculate_area():
+    global after_id
+    if after_id:
+        window.after_cancel(after_id)
     for widget in window.winfo_children():
         widget.destroy()
-    ctk.CTkButton(window, text='Circle', command=go_to_circle_area).pack(pady=10)
-    ctk.CTkButton(window, text='Rectangle', command=go_to_rectangle_area).pack(pady=10)
-    ctk.CTkButton(window, text='Right Triangle', command=go_to_right_triangle_area).pack(pady=10)
-    ctk.CTkButton(window, text='Regular Triangle', command=go_to_regular_triangle_area).pack(pady=10)
-    ctk.CTkButton(window, text='Regular Polygon', command=go_to_regular_polygon_area).pack(pady=10)
+
+    frames = []
+    gif = Image.open("Glitch_number.gif")
+    for frame in ImageSequence.Iterator(gif):
+        frame = frame.copy().convert("RGBA")
+        r, g, b, a = frame.split()
+        a = a.point(lambda x: x * 0.4) 
+        frame.putalpha(a)
+        frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+    bg_label = ctk.CTkLabel(window, text="")
+    bg_label.place(x=0, y=0)
+
+    def animate(frame_index=0):
+        global after_id
+        bg_label.configure(image=frames[frame_index])
+        after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+    animate()
+    area_img = ctk.CTkImage(Image.open("Areaofcircle.png"), size=(100, 100))
+    ctk.CTkButton(window, text='Circle', command=go_to_circle_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image=area_img, compound="top").place(x=10, y=5)
+    ctk.CTkButton(window, text='Rectangle', command=go_to_rectangle_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 12)).place(x=165, y=5)
+    ctk.CTkButton(window, text='Right \nTriangle', command=go_to_right_triangle_area, width =145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14) ).place(x=325 , y=5)
+    ctk.CTkButton(window, text='Regular \nTriangle', command=go_to_regular_triangle_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14)).place (x=66.16, y=250)
+    ctk.CTkButton(window, text='Regular \nPolygon', command=go_to_regular_polygon_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14)).place(x=263.8, y=250)
+    ctk.CTkButton(window, text='Exit', command=main_menu, width=100, height=50, fg_color="#101111", border_color="#ffffff", corner_radius=10, bg_color='transparent', border_width=2.5, hover_color="#555555", font= ('Press Start 2P', 18)).place(x=187.5, y=535)
 
 from sympy import symbols, Eq, solve, sympify, SympifyError
 import re
