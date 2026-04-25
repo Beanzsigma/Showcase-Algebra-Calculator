@@ -30,7 +30,7 @@ def main_menu():
     for frame in ImageSequence.Iterator(gif):
         frame = frame.copy().convert("RGBA")
         r, g, b, a = frame.split()
-        a = a.point(lambda x: x * 0.4)  
+        a = a.point(lambda x: x * 0.4)   #the gif bg
         frame.putalpha(a)
         frames.append(ctk.CTkImage(frame, size=(500, 615)))
 
@@ -41,7 +41,7 @@ def main_menu():
         global after_id
         bg_label.configure(image=frames[frame_index])
         after_id = window.after(20, animate, (frame_index + 1) % len(frames))
-    animate()
+    animate()                            #main menu buttons
     area_img = ctk.CTkImage(Image.open(get_path("Areaofcircle.png")), size=(100, 100))
     ctk.CTkButton(window, text='Calculate the \narea of a shape', command=calculate_area, width=223, height=223, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 12.5), image=area_img, compound = "top").place(x=10, y=46)
     quadratic_img = ctk.CTkImage(Image.open(get_path("Quadratic_formula_img.png")), size=(136, 23))
@@ -51,7 +51,7 @@ def main_menu():
     algebra_img  = ctk.CTkImage(Image.open (get_path("Algebra_expression.png")), size=(180, 90))
     ctk.CTkButton(window, text='Solve an \nalgebraic \nexpression', command=solve_algebraic_expression, width=223, height=223, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image= algebra_img, compound= "top").place(x=245, y=288)
     ctk.CTkButton(window, text='Exit', command=window.destroy, width=100, height=50, fg_color="#101111", border_color="#ffffff", corner_radius=10, bg_color='transparent', border_width=2.5, hover_color="#555555", font= ('Press Start 2P', 18)).place(x=187.5, y=535)  
-
+                                      #fnctions
 def calculate_area():
     global after_id
     if after_id:
@@ -64,7 +64,7 @@ def calculate_area():
     for frame in ImageSequence.Iterator(gif):
         frame = frame.copy().convert("RGBA")
         r, g, b, a = frame.split()
-        a = a.point(lambda x: x * 0.4) 
+        a = a.point(lambda x: x * 0.4)             #gif bg
         frame.putalpha(a)
         frames.append(ctk.CTkImage(frame, size=(500, 615)))
 
@@ -75,7 +75,7 @@ def calculate_area():
         global after_id
         bg_label.configure(image=frames[frame_index])
         after_id = window.after(20, animate, (frame_index + 1) % len(frames))
-    animate()
+    animate()                   #area of shapes menu
     area_img = ctk.CTkImage(Image.open(get_path("Areaofcircle.png")), size=(100, 100))
     ctk.CTkButton(window, text='Circle', command=go_to_circle_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image=area_img, compound="top").place(x=10, y=5)
     rectangle_area = ctk.CTkImage (Image.open(get_path("Rectangle_area.png")), size=(100, 60))
@@ -92,80 +92,161 @@ from sympy import symbols, Eq, solve, sympify, SympifyError
 import re
 
 def solve_algebraic_expression():
+    global after_id
+    if after_id:
+        window.after_cancel(after_id)
     for widget in window.winfo_children():
         widget.destroy()
-    ctk.CTkLabel(window, text='Enter an algebraic expression to solve (Use x as the variable)').pack(pady=10)
-    expression_entry = ctk.CTkEntry(window, placeholder_text='Enter expression')
+
+    frames = []
+    gif = Image.open(get_path("Glitch_number.gif"))
+    for frame in ImageSequence.Iterator(gif):
+        frame = frame.copy().convert("RGBA")
+        r, g, b, a = frame.split()
+        a = a.point(lambda x: x * 0.4)
+        frame.putalpha(a)
+        frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+    bg_label = ctk.CTkLabel(window, text="")
+    bg_label.place(x=0, y=0)
+
+    def animate(frame_index=0):
+        global after_id
+        try:
+            bg_label.configure(image=frames[frame_index])
+            after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+        except Exception:
+            pass
+    animate()
+
+    ctk.CTkLabel(window, text='Enter an algebraic expression to \nsolve (Use x as the variable) \ne.g: 3x+583=8934)', font=('Press Start 2P', 14), fg_color="#101111").pack(pady=10)
+    expression_entry = ctk.CTkEntry(window, placeholder_text='Enter expression', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
     expression_entry.pack(pady=10)
     result_label = ctk.CTkLabel(window, text='')
     result_label.pack(pady=10)
-    ctk.CTkButton(window, text='Return to Main Menu', command=main_menu).pack(pady=10)
-    ctk.CTkButton(window, text='Solve Expression', command=lambda: solve_and_display_expression(expression_entry.get(), result_label)).pack(pady=10)
-
-def solve_and_display_expression(expression, result_label):
-    try:
+    rounded_label = ctk.CTkLabel(window, text='')
+    rounded_label.pack(pady=10)
+    ctk.CTkButton(window, text='Exit', command=main_menu, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=20)
+    ctk.CTkButton(window, text='Solve Expression', command=lambda: solve_and_display_expression(expression_entry.get(), result_label, rounded_label), fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=20)
+    ctk.CTkLabel(window, text='Note: Complex expressions that \ninclude division or powers \nmay not work.',  font=('Press Start 2P', 14), fg_color="#101111").pack(pady=10, side='bottom')
+def solve_and_display_expression(expression, result_label, rounded_label):
+    try:                                                   
         x = symbols('x')
         expression = re.sub(r'(\d)(x)', r'\1*\2', expression)
         left_side, right_side = expression.split('=')
         equation = Eq(sympify(left_side), sympify(right_side))
         solution = solve(equation, x)
         if solution:
-            result_label.configure(text=f'The value of x is: {solution[0]}')
+            result_label.configure(text=f'The value of x is: \n{solution[0]}', font=('Press Start 2P', 12), fg_color="#101111")
+            try:
+                rounded = round(float(solution[0]), 2)
+                rounded_label.configure(text=f'Approx: {rounded}', font=('Press Start 2P', 12), fg_color="#101111")
+            except:
+                rounded_label.configure(text='')
         else:
             result_label.configure(text='No solution found.')
+            rounded_label.configure(text='')
     except (ValueError, SympifyError):
-        result_label.configure(text='Invalid input. Please enter a valid algebraic expression or use x as the variable.')
+        result_label.configure(text='Invalid input. Please enter a valid algebraic \nexpression, or use x as the variable.', font=('Press Start 2P', 11), fg_color="#101111")
 
 def calculate_factorial():
+    global after_id                       #factorial calcs
+    if after_id:
+        window.after_cancel(after_id)
     for widget in window.winfo_children():
         widget.destroy()
-    ctk.CTkLabel(window, text='Enter a non-negative integer to calculate its factorial').pack(pady=10)
-    factorial_entry = ctk.CTkEntry(window, placeholder_text='Enter number')
-    factorial_entry.pack(pady=10)
-    ctk.CTkButton(window, text='Return to Main Menu', command=main_menu).pack(pady=10)
-    ctk.CTkButton(window, text='Calculate Factorial', command=lambda: calculate_and_display_factorial(factorial_entry.get())).pack(pady=10)
 
-def calculate_and_display_factorial(n):
+    frames = []
+    gif = Image.open(get_path("Glitch_number.gif"))
+    for frame in ImageSequence.Iterator(gif):
+        frame = frame.copy().convert("RGBA")
+        r, g, b, a = frame.split()
+        a = a.point(lambda x: x * 0.4)
+        frame.putalpha(a)
+        frames.append(ctk.CTkImage(frame, size=(500, 615)))
+    bg_label = ctk.CTkLabel(window, text="")
+    bg_label.place(x=0, y=0)
+    def animate(frame_index=0):
+        global after_id
+        bg_label.configure(image=frames[frame_index])
+        after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+    animate()
+    ctk.CTkLabel(window, text='Enter a non-negative integer \nto calculate its factorial', font=('Press Start 2P', 14), fg_color="#101111").pack(pady=20)
+    factorial_entry = ctk.CTkEntry(window, placeholder_text='Enter number', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
+    factorial_entry.pack(pady=10)
+    ctk.CTkButton(window, text='Calculate Factorial', command=lambda: calculate_and_display_factorial(factorial_entry.get(), result_label), fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=10)
+    ctk.CTkButton(window, text='Exit', command=main_menu, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=25)
+    result_label = ctk.CTkLabel(window, text='', )
+    result_label.pack(pady=10)
+    result_label.pack(pady=10)
+def calculate_and_display_factorial(n, result_label):
     try:
         n = int(n)
         if n < 0:
-            ctk.CTkLabel(window, text='Invalid input. Please enter a non-negative integer.').pack(pady=10)
+            result_label.configure(text='Invalid input. Please enter a non-negative integer.', font=('Press Start 2P', 12), fg_color="#101111")
+            return
+        if n>34:
+            result_label.configure(text="Overflow.", font=('Press Start 2P', 12), fg_color="#101111")
             return
         factorial = math.factorial(n)
-        ctk.CTkLabel(window, text=f'The factorial of {n} is: {factorial}').pack(pady=10)
+        result_label.configure(text=f'The factorial of {n} is: \n{factorial}', font=('Press Start 2P', 12), fg_color="#101111")
     except ValueError:
-        ctk.CTkLabel(window, text='Invalid input. Please enter a non-negative integer.').pack(pady=10)
-
+        result_label.configure(text='Invalid input. Please enter a non-negative integer.',  font=('Press Start 2P', 12), fg_color="#101111")
 def solve_quadratic():
+    global after_id              #quadratic calcs
+    if after_id:
+        window.after_cancel(after_id)
     for widget in window.winfo_children():
         widget.destroy()
-    ctk.CTkLabel(window, text='Enter the coefficients of the quadratic equation ax^2 + bx + c = 0').pack(pady=10)
-    a_entry = ctk.CTkEntry(window, placeholder_text='a')
-    a_entry.pack(pady=10)
-    b_entry = ctk.CTkEntry(window, placeholder_text='b')
-    b_entry.pack(pady=10)
-    c_entry = ctk.CTkEntry(window, placeholder_text='c')
-    c_entry.pack(pady=10)
-    ctk.CTkButton(window, text='Return to Main Menu', command=main_menu).pack(pady=10)
-    ctk.CTkButton(window, text='Solve Equation', command=lambda: solve_equation(a_entry.get(), b_entry.get(), c_entry.get())).pack(pady=10)
 
-def solve_equation(a, b, c):
+    frames = []
+    gif = Image.open(get_path("Glitch_number.gif"))
+    for frame in ImageSequence.Iterator(gif):
+        frame = frame.copy().convert("RGBA")
+        r, g, b, a = frame.split()
+        a = a.point(lambda x: x * 0.4)
+        frame.putalpha(a)
+        frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+    bg_label = ctk.CTkLabel(window, text="")
+    bg_label.place(x=0, y=0)
+
+    def animate(frame_index=0):
+        global after_id
+        bg_label.configure(image=frames[frame_index])
+        after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+    animate()
+
+    ctk.CTkLabel(window, text='Enter the coefficients of the \nquadratic equation: \nax^2 + bx + c = 0', font=('Press Start 2P', 14), fg_color="#101111").pack(pady=10)
+    a_entry = ctk.CTkEntry(window, placeholder_text='a', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
+    a_entry.pack(pady=10)
+    b_entry = ctk.CTkEntry(window, placeholder_text='b', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
+    b_entry.pack(pady=10)
+    c_entry = ctk.CTkEntry(window, placeholder_text='c', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
+    c_entry.pack(pady=10)
+    ctk.CTkButton(window, text='Solve', command=lambda: solve_equation(a_entry.get(), b_entry.get(), c_entry.get(), result_label), fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=130, height=60).pack(pady=25)
+    result_label = ctk.CTkLabel(window, text='', fg_color="#101111")
+    ctk.CTkButton(window, text='Exit', command=main_menu, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=25)
+    result_label.pack(pady=10)
+def solve_equation(a, b, c, result_label):
     try:
         a = float(a)
         b = float(b)
         c = float(c)
         if a == 0:
-            ctk.CTkLabel(window, text='Coefficient a cannot be 0.').pack(pady=10)
+            result_label.configure(text='Coefficient a cannot be 0.', font=('Press Start 2P', 12), fg_color="#101111")
             return
         x = symbols('x')
         equation = Eq(a * x**2 + b * x + c, 0)
         solutions = solve(equation, x)
-        ctk.CTkLabel(window, text=f'The solutions are: {solutions}').pack(pady=10)
+        rounded = [round(float(s), 2) if s.is_real else s for s in solutions]
+        solutions_text = str(rounded).replace(',', ',\n')
+        result_label.configure(text=f'Solutions:\n{solutions_text}', font=('Press Start 2P', 11), fg_color="#101111")
     except ValueError:
-        ctk.CTkLabel(window, text='Invalid input.').pack(pady=10)
+        result_label.configure(text='Invalid input.', font=('Press Start 2P', 12), fg_color="#101111")
 class regular_polygon_area(ctk.CTkFrame):
     def __init__(self, parent):
-        super().__init__(parent)
+        super().__init__(parent)                 #area polygon code
         global after_id
         if after_id:
             window.after_cancel(after_id)
@@ -202,7 +283,7 @@ class regular_polygon_area(ctk.CTkFrame):
         self.apothem_entry.pack(pady=10)
         self.result_label = ctk.CTkLabel(self, text='')
         self.result_label.pack(pady=10)
-        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area, font=('Press Start 2P', 13),  fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555").pack(pady=25)
+        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area, font=('Press Start 2P', 13),  fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", width=150, height=60).pack(pady=25)
         ctk.CTkButton(self, text='Exit', command=self.go_back, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=10)
     def calculate_area(self):
         try:
@@ -223,7 +304,7 @@ class regular_polygon_area(ctk.CTkFrame):
         main_menu()
 class regular_triangle_area(ctk.CTkFrame):
     def __init__(self, parent):
-        super().__init__(parent)
+        super().__init__(parent)                           #reg triangle code
         global after_id
         if after_id:
             window.after_cancel(after_id)
@@ -299,7 +380,7 @@ class regular_triangle_area(ctk.CTkFrame):
         main_menu()
 
 class right_triangle_area(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent):              #right tri code
         super().__init__(parent)
         global after_id
         if after_id:
@@ -361,7 +442,7 @@ class right_triangle_area(ctk.CTkFrame):
 class rectangle_area(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent, fg_color="transparent")
-        global after_id
+        global after_id                    #rectangle code
         if after_id:
             window.after_cancel(after_id)
         
@@ -422,7 +503,7 @@ class rectangle_area(ctk.CTkFrame):
         main_menu()
 class CircleArea(ctk.CTkFrame):
     def __init__(self, parent):
-        super().__init__(parent, fg_color="transparent")
+        super().__init__(parent, fg_color="transparent")              #cricle area code
         
         global after_id
         if after_id:
@@ -471,7 +552,7 @@ class CircleArea(ctk.CTkFrame):
         for widget in window.winfo_children():
             widget.destroy()
         main_menu()
-
+                #more def
 def go_to_circle_area():
     for widget in window.winfo_children():
         widget.destroy()
