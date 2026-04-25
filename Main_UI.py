@@ -16,6 +16,7 @@ def get_path(relative_path):
 window = ctk.CTk()
 window.title('Showcase Algebra Calculator')
 window.geometry("480x615")
+window.iconbitmap(get_path('Calc_icon.ico'))
 
 def main_menu():
     global after_id
@@ -80,7 +81,7 @@ def calculate_area():
     rectangle_area = ctk.CTkImage (Image.open(get_path("Rectangle_area.png")), size=(100, 60))
     ctk.CTkButton(window, text='Rectangle', command=go_to_rectangle_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 12), image=rectangle_area, compound="top").place(x=165, y=5)
     right_triangle_area= ctk.CTkImage (Image.open(get_path("Right_triangle.png")), size=(60, 35))
-    ctk.CTkButton(window, text='Right\nTriangle', command=go_to_right_triangle_area, width =145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image=right_triangle_area, compound="top" ).place(x=325 , y=5)
+    ctk.CTkButton(window, text='Right\nTriangle', command=go_to_right_triangle_area, width =145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 12), image=right_triangle_area, compound="top" ).place(x=325 , y=5)
     regular_triangle_img = ctk.CTkImage(Image.open(get_path("Triangle_areaimg.png")), size=(110, 110))
     ctk.CTkButton(window, text='Any\nTriangle', command=go_to_regular_triangle_area, width=145, height=235, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), image= regular_triangle_img, compound='top').place (x=66.16, y=250)
     regular_polyogn_img = ctk.CTkImage(Image.open(get_path("Regular_polygon.png")), size =(100, 100))
@@ -162,40 +163,59 @@ def solve_equation(a, b, c):
         ctk.CTkLabel(window, text=f'The solutions are: {solutions}').pack(pady=10)
     except ValueError:
         ctk.CTkLabel(window, text='Invalid input.').pack(pady=10)
-# the classes in order of logic code
 class regular_polygon_area(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
+        global after_id
+        if after_id:
+            window.after_cancel(after_id)
+        
+        frames = []
+        gif = Image.open(get_path("Glitch_number.gif"))
+        for frame in ImageSequence.Iterator(gif):
+            frame = frame.copy().convert("RGBA")
+            r, g, b, a = frame.split()
+            a = a.point(lambda x: x * 0.4)
+            frame.putalpha(a)
+            frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+        self.bg_label = ctk.CTkLabel(self, text="")
+        self.bg_label.place(x=0, y=0)
+
+        def animate(frame_index=0):
+            global after_id
+            self.bg_label.configure(image=frames[frame_index])
+            after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+        animate()
         self.area = 0
-        self.num_sides_label = ctk.CTkLabel(self, text='Enter the number of sides of the regular polygon')
+        self.num_sides_label = ctk.CTkLabel(self, text='Enter the number of \nsides of the regular polygon', font=('Press Start 2P',13), fg_color="#101111")
         self.num_sides_label.pack(pady=10)
-        self.num_sides_entry = ctk.CTkEntry(self, placeholder_text='Number of sides')
+        self.num_sides_entry = ctk.CTkEntry(self, placeholder_text='Number of sides', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
         self.num_sides_entry.pack(pady=10)
-        self.side_length_label = ctk.CTkLabel(self, text='Enter the length of one side of the regular polygon')
+        self.side_length_label = ctk.CTkLabel(self, text='Enter the length of one \nside of the regular polygon', font=('Press Start 2P',13), fg_color="#101111")
         self.side_length_label.pack(pady=10)
-        self.side_length_entry = ctk.CTkEntry(self, placeholder_text='Side length')
+        self.side_length_entry = ctk.CTkEntry(self, placeholder_text='Side length', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
         self.side_length_entry.pack(pady=10)
-        self.apothem_label = ctk.CTkLabel(self, text='Enter the apothem of the regular polygon')
+        self.apothem_label = ctk.CTkLabel(self, text='Enter the apothem of \nthe regular polygon', font=('Press Start 2P',13), fg_color="#101111")
         self.apothem_label.pack(pady=10)
-        self.apothem_entry = ctk.CTkEntry(self, placeholder_text='Apothem')
+        self.apothem_entry = ctk.CTkEntry(self, placeholder_text='Apothem', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
         self.apothem_entry.pack(pady=10)
         self.result_label = ctk.CTkLabel(self, text='')
         self.result_label.pack(pady=10)
-        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area).pack(pady=10)
-        ctk.CTkButton(self, text='Return to Main Menu', command=self.go_back).pack(pady=10)
-
+        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area, font=('Press Start 2P', 13),  fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555").pack(pady=25)
+        ctk.CTkButton(self, text='Exit', command=self.go_back, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=10)
     def calculate_area(self):
         try:
             num_sides = int(self.num_sides_entry.get())
             side_length = float(self.side_length_entry.get())
             apothem = float(self.apothem_entry.get())
             if num_sides <= 0 or side_length <= 0 or apothem <= 0:
-                self.result_label.configure(text='Invalid input.')
+                self.result_label.configure(text='Invalid input.', font=('Press Start 2P',12), fg_color="#101111")
                 return
             self.area = 0.5 * num_sides * side_length * apothem
-            self.result_label.configure(text=f'The area of the polygon is: {round(self.area, 4)}')
+            self.result_label.configure(text=f'The area of the polygon is: \n{round(self.area, 4)}', font=('Press Start 2P',12), fg_color="#101111")
         except ValueError:
-            self.result_label.configure(text='Invalid input.')
+            self.result_label.configure(text='Invalid input.', font=('Press Start 2P',12), fg_color="#101111")
 
     def go_back(self):
         for widget in window.winfo_children():
@@ -204,27 +224,48 @@ class regular_polygon_area(ctk.CTkFrame):
 class regular_triangle_area(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
+        global after_id
+        if after_id:
+            window.after_cancel(after_id)
+        
+        frames = []
+        gif = Image.open(get_path("Glitch_number.gif"))
+        for frame in ImageSequence.Iterator(gif):
+            frame = frame.copy().convert("RGBA")
+            r, g, b, a = frame.split()
+            a = a.point(lambda x: x * 0.4)
+            frame.putalpha(a)
+            frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+        self.bg_label = ctk.CTkLabel(self, text="")
+        self.bg_label.place(x=0, y=0)
+
+        def animate(frame_index=0):
+            global after_id
+            self.bg_label.configure(image=frames[frame_index])
+            after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+        animate()
         self.area = 0
-        self.side_1_label = ctk.CTkLabel(self, text='Enter the first side length of the triangle')
+        self.side_1_label = ctk.CTkLabel(self, text='Enter the first side \nlength of the triangle', font=('Press Start 2P',11), fg_color="#101111")
         self.side_1_label.pack(pady=10)
-        self.side_1_entry = ctk.CTkEntry(self, placeholder_text='Side 1')
+        self.side_1_entry = ctk.CTkEntry(self, placeholder_text='Side 1',  width=200, height=30, fg_color="#101111", border_color="white", font=('Press Start 2P', 12))
         self.side_1_entry.pack(pady=10)
-        self.side_2_label = ctk.CTkLabel(self, text='Enter the second side length of the triangle')
+        self.side_2_label = ctk.CTkLabel(self, text='Enter the second side \nlength of the triangle', font=('Press Start 2P',11), fg_color="#101111")
         self.side_2_label.pack(pady=10)
-        self.side_2_entry = ctk.CTkEntry(self, placeholder_text='Side 2')
+        self.side_2_entry = ctk.CTkEntry(self, placeholder_text='Side 2', width=200, height=30, fg_color="#101111", border_color="white", font=('Press Start 2P', 12))
         self.side_2_entry.pack(pady=10)
-        self.angle_label = ctk.CTkLabel(self, text='Enter the angle between the sides in degrees')
+        self.angle_label = ctk.CTkLabel(self, text='Enter the angle between \nthe sides in degrees', font=('Press Start 2P',11), fg_color="#101111")
         self.angle_label.pack(pady=10)
-        self.angle_entry = ctk.CTkEntry(self, placeholder_text='Angle')
+        self.angle_entry = ctk.CTkEntry(self, placeholder_text='Angle', width=200, height=30, fg_color="#101111", border_color="white", font=('Press Start 2P', 12))
         self.angle_entry.pack(pady=10)
-        ctk.CTkLabel(self, text='Would you like to round to the nearest tenth (1), hundredth (2), or thousandth (3)?').pack(pady=10)
-        self.round_entry = ctk.CTkEntry(self, placeholder_text='Round to')
+        ctk.CTkLabel(self, text='Would you like to round to the nearest \ntenth (1), hundredth (2), or thousandth (3)?', font=('Press Start 2P',10.5), fg_color="#101111").pack(pady=10)
+        self.round_entry = ctk.CTkEntry(self, placeholder_text='Round to', width=200, height=30, fg_color="#101111", border_color="white", font=('Press Start 2P', 12))
         self.round_entry.pack(pady=10)
         self.result_label = ctk.CTkLabel(self, text='')
         self.result_label.pack(pady=10)
-        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area).pack(pady=10)
-        ctk.CTkButton(self, text='Round Area', command=self.round_area).pack(pady=10)
-        ctk.CTkButton(self, text='Return to Main Menu', command=self.go_back).pack(pady=10)
+        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area, font=('Press Start 2P', 13),  fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555").pack(pady=10)
+        ctk.CTkButton(self, text='Round Area', command=self.round_area, font=('Press Start 2P', 13),  fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555").pack(pady=10)
+        ctk.CTkButton(self, text='Exit', command=self.go_back, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).pack(pady=10)
 
     def calculate_area(self):
         try:
@@ -232,23 +273,23 @@ class regular_triangle_area(ctk.CTkFrame):
             side_2 = float(self.side_2_entry.get())
             angle = float(self.angle_entry.get())
             if side_1 <= 0 or side_2 <= 0 or angle < 0 or angle > 180:
-                self.result_label.configure(text='Invalid input.')
+                self.result_label.configure(text='Invalid input.', font=('Press Start 2P',11), fg_color="#101111")
                 return
             self.area = 0.5 * side_1 * side_2 * math.sin(math.radians(angle))
-            self.result_label.configure(text=f'The area of the triangle is: {round(self.area, 4)}')
+            self.result_label.configure(text=f'The area of the triangle is: \n{round(self.area, 4)}', font=('Press Start 2P',11), fg_color="#101111")
         except ValueError:
-            self.result_label.configure(text='Invalid input.')
+            self.result_label.configure(text='Invalid input.', font=('Press Start 2P',11), fg_color="#101111")
 
     def round_area(self):
         if self.area == 0:
-            self.result_label.configure(text='Calculate area first.')
+            self.result_label.configure(text='Calculate area first.', font=('Press Start 2P',11), fg_color="#101111")
             return
         if self.round_entry.get() == 'tenth' or self.round_entry.get() == '1':
-            self.result_label.configure(text=f'Area rounded to the nearest tenth: {round(self.area, 1)}')
+            self.result_label.configure(text=f'Area rounded to the \nnearest tenth: {round(self.area, 1)}')
         elif self.round_entry.get() == 'hundredth' or self.round_entry.get() == '2':
-            self.result_label.configure(text=f'Area rounded to the nearest hundredth: {round(self.area, 2)}')
+            self.result_label.configure(text=f'Area rounded to the\n nearest hundredth: {round(self.area, 2)}')
         elif self.round_entry.get() == 'thousandth' or self.round_entry.get() == '3':
-            self.result_label.configure(text=f'Area rounded to the nearest thousandth: {round(self.area, 3)}')
+            self.result_label.configure(text=f'Area rounded to the \nnearest thousandth: {round(self.area, 3)}')
         else:
             self.result_label.configure(text='Invalid input. Please enter tenth, hundredth, or thousandth.')
 
@@ -260,28 +301,57 @@ class regular_triangle_area(ctk.CTkFrame):
 class right_triangle_area(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.base_label = ctk.CTkLabel(self, text='Enter the base of the triangle')
+        global after_id
+        if after_id:
+            window.after_cancel(after_id)
+        
+        frames = []
+        gif = Image.open(get_path("Glitch_number.gif"))
+        for frame in ImageSequence.Iterator(gif):
+            frame = frame.copy().convert("RGBA")
+            r, g, b, a = frame.split()
+            a = a.point(lambda x: x * 0.4)
+            frame.putalpha(a)
+            frames.append(ctk.CTkImage(frame, size=(500, 615)))
+
+        self.bg_label = ctk.CTkLabel(self, text="")
+        self.bg_label.place(x=0, y=0)
+
+        def animate(frame_index=0):
+            global after_id
+            self.bg_label.configure(image=frames[frame_index])
+            after_id = window.after(20, animate, (frame_index + 1) % len(frames))
+        animate()
+        self.base_label = ctk.CTkLabel(self, text='Enter the base \nof the triangle', font=('Press Start 2P',14), fg_color="#101111")
         self.base_label.pack(pady=10)
-        self.base_entry = ctk.CTkEntry(self, placeholder_text='Base')
+        self.base_entry = ctk.CTkEntry(self, placeholder_text='Base', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
         self.base_entry.pack(pady=10)
-        self.height_entry = ctk.CTkEntry(self, placeholder_text='Height')
-        self.height_label = ctk.CTkLabel(self, text='Enter the height of the triangle')
+        self.height_entry = ctk.CTkEntry(self, placeholder_text='Height', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
+        self.height_label = ctk.CTkLabel(self, text='Enter the height \nof the triangle', font=('Press Start 2P',14), fg_color="#101111")
         self.height_label.pack(pady=10)
         self.height_entry.pack(pady=10)
-        ctk.CTkButton(self, text='Return to Main Menu', command=self.go_back).pack(pady=10)
-        ctk.CTkButton(self, text='Calculate Area', command=self.calculate_area).pack(pady=10)
+        ctk.CTkButton(self, text='Exit', command=self.go_back, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).place(x=186.8, y=485)
+        ctk.CTkButton(self, text='Calculate \nArea', command=self.calculate_area, height=80, width=120, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14)).place(x=146, y=390)
+        ctk.CTkButton(self, text='Clear', command=self.clear, fg_color="#101111", border_color="#ffffff", corner_radius=20, bg_color='transparent', border_width=2.5, hover_color="#555555", font=('Press Start 2P', 14), width=15, height=50).place(x=181, y=550)
 
     def calculate_area(self):
         try:
             base = float(self.base_entry.get())
             height = float(self.height_entry.get())
             if base <= 0 or height <= 0:
-                ctk.CTkLabel(self, text='Invalid input.').pack(pady=10)
+                ctk.CTkLabel(self, text='Invalid input.', font=('Press Start 2P',14), fg_color="#101111").pack(pady=10)
                 return
             area = 0.5 * base * height
-            ctk.CTkLabel(self, text=f'The area of the triangle is: {round(area, 4)}').pack(pady=10)
+            ctk.CTkLabel(self, text=f'The area of the triangle is: \n{round(area, 4)}', font=('Press Start 2P',14), fg_color="#101111").pack(pady=10)
         except ValueError:
-            ctk.CTkLabel(self, text='Invalid input.').pack(pady=10)
+            ctk.CTkLabel(self, text='Invalid input.', font=('Press Start 2P',14), fg_color="#101111").pack(pady=10)
+
+    def clear(self):
+        self.base_entry.delete(0, 'end')
+        self.height_entry.delete(0, 'end')
+        for widget in self.winfo_children():
+            if isinstance(widget, ctk.CTkLabel) and widget not in [self.base_label, self.height_label, self.bg_label]:
+                widget.destroy()         
 
     def go_back(self):
         for widget in window.winfo_children():
