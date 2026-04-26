@@ -6,7 +6,7 @@ from sympy import SympifyError, symbols, Eq, solve, sympify
 after_id=None
 import sys
 import os
-import ctypes
+ctk.set_appearance_mode("dark")
 def get_path(relative_path):
     try:
         base_path = sys._MEIPASS
@@ -14,9 +14,12 @@ def get_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-font_path = get_path("PressStart2P.ttf")
-ctypes.windll.gdi32.AddFontResourceW(font_path)
+from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+FR_PRIVATE = 0x10
+def load_font(font_path):
+    windll.gdi32.AddFontResourceExW(font_path, FR_PRIVATE, 0)
 
+load_font(get_path("PressStart2P-Regular.ttf"))
 window = ctk.CTk()
 window.title('Showcase Algebra Calculator')
 window.geometry("480x615")
