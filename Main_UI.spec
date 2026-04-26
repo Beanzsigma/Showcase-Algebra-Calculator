@@ -5,7 +5,7 @@ a = Analysis(
     ['Main_UI.py'],
     pathex=[],
     binaries=[],
-    datas=[('Glitch_number.gif', '.'), ('Areaofcircle.png', '.'), ('Quadratic_formula_img.png', '.'), ('Factorial.png', '.'), ('Algebra_expression.png', '.'), ('Rectangle_area.png', '.'), ('Right_triangle.png', '.'), ('Triangle_areaimg.png', '.'), ('Regular_polygon.png', '.'), ('Calc_icon.ico', '.')],
+    datas=[('Glitch_number.gif', '.'), ('Areaofcircle.png', '.'), ('Quadratic_formula_img.png', '.'), ('Factorial.png', '.'), ('Algebra_expression.png', '.'), ('Rectangle_area.png', '.'), ('Right_triangle.png', '.'), ('Triangle_areaimg.png', '.'), ('Regular_polygon.png', '.'), ('Calc_icon.ico', '.'), ('PressStart2P-Regular.ttf', '.')],
     hiddenimports=['customtkinter', 'PIL', 'sympy'],
     hookspath=[],
     hooksconfig={},

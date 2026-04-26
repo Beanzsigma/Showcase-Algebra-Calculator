@@ -6,12 +6,16 @@ from sympy import SympifyError, symbols, Eq, solve, sympify
 after_id=None
 import sys
 import os
+import ctypes
 def get_path(relative_path):
     try:
         base_path = sys._MEIPASS
     except AttributeError:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
+
+font_path = get_path("PressStart2P.ttf")
+ctypes.windll.gdi32.AddFontResourceW(font_path)
 
 window = ctk.CTk()
 window.title('Showcase Algebra Calculator')
