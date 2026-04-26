@@ -1,3 +1,4 @@
+<img width="473" height="645" alt="Screenshot 2026-04-25 170212" src="https://github.com/user-attachments/assets/831acdbd-6004-4d5c-91c5-b6520b97b470" />
 # Showcase-Calculator        
 VIDEO DEMO INCLUDED IN REPOSITORY
 Using everything I've learn so far in Python to make a proper, functional algebra Calculator.
