@@ -10,4 +10,13 @@ Minimum AI used to fix/debug code.
 AI helped create GIF background.
 AI used for the algebra mode logic.
 AI used for the quadratic mode logic.
-For the web playable version, Claude AI was used to convert the code from Python to HTML. It explicitly states the usage of Claude AI, and has a link to the latest release in Github. 
+
+
+
+NOTE: The web playable version of this code is not available because it uses CustomTkinter and custom fonts. However, a downloadable EXE version is available: https://github.com/Beanzsigma/Showcase-Algebra-Calculator/releases/tag/v1.0.1
+How to use EXE version:
+
+Download the .exe file
+Double-click to run
+NOTE: Windows might warn about unknown publisher. To run, click "More info," then "Run anyway."
+FYI: You may also experience freezes, crashes, or slow response times.
