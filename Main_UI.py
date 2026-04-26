@@ -119,7 +119,7 @@ def solve_algebraic_expression():
             pass
     animate()
 
-    ctk.CTkLabel(window, text='Enter an algebraic expression to \nsolve (Use x as the variable) \ne.g: 3x+583=8934)', font=('Press Start 2P', 14), fg_color="#101111").pack(pady=10)
+    ctk.CTkLabel(window, text='Enter an algebraic expression to \nsolve (Use x as the variable) \ne.g: (3x+583)+2x=8934', font=('Press Start 2P', 14), fg_color="#101111").pack(pady=10)
     expression_entry = ctk.CTkEntry(window, placeholder_text='Enter expression', width=270, height=50, fg_color="#101111", border_color="white", font=('Press Start 2P', 14))
     expression_entry.pack(pady=10)
     result_label = ctk.CTkLabel(window, text='')
