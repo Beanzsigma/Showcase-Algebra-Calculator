@@ -7,9 +7,9 @@ Description: The showcase algebra calculator is a Python based desktop applicati
 
 Where AI was used:
 Minimum AI used to fix/debug code.
-AI helped create GIF background.
+AI helped fix code for GIF background.
 AI used for the algebra mode logic.
-AI used for the quadratic mode logic.
+AI used to fix quadratic mode logic.
 
 
 
